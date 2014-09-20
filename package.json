@@ -6,7 +6,15 @@
   "author": "Francois-Guillaume Ribreau <npm@fgribreau.com> (http://fgribreau.com/)",
   "license": "MIT",
   "dependencies": {
+    "lodash": "^2.4.1",
     "redis": "^0.12.1",
-    "spid-storage-asset-interface": "~0.0.2"
+    "spid-storage-asset-interface": "~0.0.3"
+  },
+  "scripts": {
+    "test": "mocha test/*"
+  },
+  "devDependencies": {
+    "chai": "^1.9.1",
+    "mocha": "^1.21.4"
   }
 }

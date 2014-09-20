@@ -1,7 +1,8 @@
 'use strict';
 
-var redis            = require('redis');
+var redis                 = require('redis');
 var AssetStorageInterface = require('spid-storage-asset-interface');
+var _                     = require('lodash');
 
 function RedisAssetStorage() {
   this._client = null;
@@ -12,19 +13,66 @@ function RedisAssetStorage() {
  * @param  {Function} f(err)
  */
 RedisAssetStorage.prototype.init = function (configuration, f) {
-  // TODO: get redis configuration from config
 
-  try {
-    this._client = redis.createClient(6379, '127.0.0.1', {
-      max_attempts: 1
-    });
+  configuration({
+    /**
+     * @type {Number} redis port number
+     */
+    port:6379,
 
-    this._client.once('ready', f);
-    this._client.once('error', f);
+    /**
+     * @type {String} host name, default localhost
+     */
+    host:'127.0.0.1',
+
+    /**
+     * [password description]
+     * @type {String} password
+     */
+    password:null
+  }, _.partialRight(this.applyConfiguration.bind(this), f));
+};
+
+/**
+ * Apply a configuration that can change at runtime
+ * @param  {Null|Object} stale
+ *                       old configuration if defined, `null` otherwise
+ * @param  {Null|Object} fresh
+ *                       new configuration if defined, `null` otherwise
+ * @param {Function}     f(err)
+ *
+ */
+RedisAssetStorage.prototype.applyConfiguration = function(stale, fresh, f){
+  if(stale && this._client){
+    this._client.quit();
   }
-  catch (e) {
-    f(e);
+
+  if(fresh){
+    f = _.once(f);
+
+    try {
+      this._client = redis.createClient(fresh.port, fresh.host, {
+        max_attempts: 1,
+        auth_pass: fresh.password
+      });
+
+      this._client.once('ready', f);
+      this._client.once('error', _.compose(f, this.onRedisError.bind(this)));
+    } catch (e) {
+      f(e);
+    }
+    return;
   }
+
+  // `fresh` was falsy, just call the callback
+  f();
+};
+
+RedisAssetStorage.prototype.onRedisError = function(err){
+  console.log(err);
+  // what should we do in case of redis error ?
+  // currently we only print it to the default logger
+  return err;
 };
 
 /**
@@ -46,7 +94,6 @@ RedisAssetStorage.prototype.dispose = function (f) {
  * @param  {[type]} key  [description]
  * @param  {[type]} value [description]
  * @param  {Function} f(err, value)
- * @return {[type]}       [description]
  */
 RedisAssetStorage.prototype.read = function (key, f) {
   this._client.get(key, function (err, reply) {
@@ -64,11 +111,9 @@ RedisAssetStorage.prototype.read = function (key, f) {
  * @param  {[type]} key  [description]
  * @param  {[type]} value [description]
  * @param  {Function} f(err)
- * @return {[type]}       [description]
  */
 RedisAssetStorage.prototype.write = function (key, value, f) {
-  // @todo handle errors
-  this._client.set(key, value, function (err) {f();});
+  this._client.set(key, value, f);
 };
 
 module.exports = AssetStorageInterface.ensureImplements(RedisAssetStorage);
