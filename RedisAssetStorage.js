@@ -1,9 +1,9 @@
 'use strict';
 
 var redis            = require('redis');
-var StorageInterface = require('spid-storage-interface');
+var StorageInterface = require('spid-storage-asset-interface');
 
-function RedisStorage() {
+function RedisAssetStorage() {
   this._client = null;
 }
 
@@ -11,7 +11,7 @@ function RedisStorage() {
  * [init description]
  * @param  {Function} f(err)
  */
-RedisStorage.prototype.init = function (f) {
+RedisAssetStorage.prototype.init = function (configuration, f) {
   // TODO: get redis configuration from config
 
   try {
@@ -31,14 +31,14 @@ RedisStorage.prototype.init = function (f) {
  * [dispose description]
  * @param  {Function} f(err)
  */
-RedisStorage.prototype.dispose = function (f) {
+RedisAssetStorage.prototype.dispose = function (f) {
   if (this._client.connected) {
     this._client.quit();
     f();
     return;
   }
 
-  f(new Error(RedisStorage.name + ' was not connected'));
+  f(new Error(RedisAssetStorage.name + ' was not connected'));
 };
 
 /**
@@ -48,7 +48,7 @@ RedisStorage.prototype.dispose = function (f) {
  * @param  {Function} f(err, value)
  * @return {[type]}       [description]
  */
-RedisStorage.prototype.read = function (key, f) {
+RedisAssetStorage.prototype.read = function (key, f) {
   this._client.get(key, function (err, reply) {
     if (err) {
       f(err);
@@ -66,9 +66,9 @@ RedisStorage.prototype.read = function (key, f) {
  * @param  {Function} f(err)
  * @return {[type]}       [description]
  */
-RedisStorage.prototype.write = function (key, value, f) {
+RedisAssetStorage.prototype.write = function (key, value, f) {
   // @todo handle errors
   this._client.set(key, value, function (err) {f();});
 };
 
-module.exports = StorageInterface.ensureImplements(RedisStorage);
+module.exports = StorageInterface.ensureImplements(RedisAssetStorage);
