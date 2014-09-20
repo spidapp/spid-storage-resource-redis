@@ -81,6 +81,16 @@ describe('RedisAssetStorage', function () {
       });
     });
 
+    describe('on configuration change', function () {
+      it('should reconnect', function (f) {
+        storage._client.OLD = true;
+        configuration.test.f(redisConfig, redisConfig, function(){
+          t.strictEqual(storage._client.OLD, undefined);
+          f();
+        });
+      });
+    });
+
     afterEach(function (f) {
       storage.dispose(f);
     });
