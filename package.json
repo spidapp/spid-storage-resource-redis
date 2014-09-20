@@ -7,6 +7,6 @@
   "license": "MIT",
   "dependencies": {
     "redis": "^0.12.1",
-    "spid-storage-asset-interface": "0.0.1"
+    "spid-storage-asset-interface": "~0.0.2"
   }
 }
