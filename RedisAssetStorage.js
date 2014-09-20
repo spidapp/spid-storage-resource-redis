@@ -1,7 +1,7 @@
 'use strict';
 
 var redis            = require('redis');
-var StorageInterface = require('spid-storage-asset-interface');
+var AssetStorageInterface = require('spid-storage-asset-interface');
 
 function RedisAssetStorage() {
   this._client = null;
@@ -71,4 +71,4 @@ RedisAssetStorage.prototype.write = function (key, value, f) {
   this._client.set(key, value, function (err) {f();});
 };
 
-module.exports = StorageInterface.ensureImplements(RedisAssetStorage);
+module.exports = AssetStorageInterface.ensureImplements(RedisAssetStorage);
