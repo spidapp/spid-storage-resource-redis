@@ -1,9 +1,18 @@
 {
-  "name": "spid-storage-asset-redis",
-  "version": "0.0.5",
-  "description": "[Plugin] Spid Redis Asset Storage",
-  "main": "RedisAssetStorage.js",
-  "author": "Francois-Guillaume Ribreau <npm@fgribreau.com> (http://fgribreau.com/)",
+  "name": "spid-storage-resource-redis",
+  "version": "0.0.1",
+  "description": "[Plugin] Spid Redis Resource Storage",
+  "main": "RedisResourceStorage.js",
+  "contributors": [
+    {
+      "name": "Francois-Guillaume Ribreau",
+      "email": "npm@fgribreau.com"
+    },
+    {
+      "name": "Etienne Rouillard",
+      "email": "rouillard.etienne@gmail.com"
+    }
+  ],
   "license": "MIT",
   "dependencies": {
     "lodash": "^2.4.1",

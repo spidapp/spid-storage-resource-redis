@@ -14,7 +14,7 @@ var redisConfig = {
 var KEY = 'key';
 var VALUE = 'value';
 
-describe('RedisAssetStorage', function () {
+describe('RedisResourceStorage', function () {
   var storage, configuration;
 
   beforeEach(function (done) {

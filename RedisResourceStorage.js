@@ -4,7 +4,7 @@ var redis                 = require('redis');
 var AssetStorageInterface = require('spid-storage-asset-interface');
 var _                     = require('lodash');
 
-function RedisAssetStorage() {
+function RedisResourceStorage() {
   this._client = null;
 }
 
@@ -12,7 +12,7 @@ function RedisAssetStorage() {
  * [init description]
  * @param  {Function} f(err)
  */
-RedisAssetStorage.prototype.init = function (configuration, f) {
+RedisResourceStorage.prototype.init = function (configuration, f) {
 
   configuration({
     /**
@@ -42,7 +42,7 @@ RedisAssetStorage.prototype.init = function (configuration, f) {
  * @param {Function}     f(err)
  *
  */
-RedisAssetStorage.prototype.applyConfiguration = function(stale, fresh, f){
+RedisResourceStorage.prototype.applyConfiguration = function(stale, fresh, f){
   if(stale && this._client){
     this._client.quit();
   }
@@ -68,7 +68,7 @@ RedisAssetStorage.prototype.applyConfiguration = function(stale, fresh, f){
   f();
 };
 
-RedisAssetStorage.prototype.onRedisError = function(err){
+RedisResourceStorage.prototype.onRedisError = function(err){
   console.log(err);
   // what should we do in case of redis error ?
   // currently we only print it to the default logger
@@ -79,14 +79,14 @@ RedisAssetStorage.prototype.onRedisError = function(err){
  * [dispose description]
  * @param  {Function} f(err)
  */
-RedisAssetStorage.prototype.dispose = function (f) {
+RedisResourceStorage.prototype.dispose = function (f) {
   if (this._client.connected) {
     this._client.quit();
     f();
     return;
   }
 
-  f(new Error(RedisAssetStorage.name + ' was not connected'));
+  f(new Error(RedisResourceStorage.name + ' was not connected'));
 };
 
 /**
@@ -95,7 +95,7 @@ RedisAssetStorage.prototype.dispose = function (f) {
  * @param  {[type]} value [description]
  * @param  {Function} f(err, value)
  */
-RedisAssetStorage.prototype.read = function (key, f) {
+RedisResourceStorage.prototype.read = function (key, f) {
   this._client.get(key, function (err, reply) {
     if (err) {
       f(err);
@@ -112,8 +112,8 @@ RedisAssetStorage.prototype.read = function (key, f) {
  * @param  {[type]} value [description]
  * @param  {Function} f(err)
  */
-RedisAssetStorage.prototype.write = function (key, value, f) {
+RedisResourceStorage.prototype.write = function (key, value, f) {
   this._client.set(key, value, f);
 };
 
-module.exports = AssetStorageInterface.ensureImplements(RedisAssetStorage);
+module.exports = AssetStorageInterface.ensureImplements(RedisResourceStorage);
