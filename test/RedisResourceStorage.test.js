@@ -11,7 +11,9 @@ var redisConfig = {
   password : process.env.REDIS_PASSWORD
 };
 
-var KEY = 'key';
+var URL = 'http://www.test.org/test.html';
+var HEADERS = {};
+var GZ_HEADERS = {'content-encoding': 'gzip'};
 var VALUE = 'value';
 
 describe('RedisResourceStorage', function () {
@@ -55,7 +57,14 @@ describe('RedisResourceStorage', function () {
 
     describe('.write', function () {
       it('should be able to write to storage', function (f) {
-        storage.write(KEY, VALUE, function(err, value){
+        storage.write(URL, HEADERS, VALUE, function(err, value){
+          t.strictEqual(err, null);
+          f();
+        });
+      });
+
+      it('should be able to write to storage with headers', function (f) {
+        storage.write(URL, GZ_HEADERS, VALUE, function(err, value){
           t.strictEqual(err, null);
           f();
         });
@@ -64,7 +73,7 @@ describe('RedisResourceStorage', function () {
 
     describe('.read', function () {
       it('should be able to read non-existent key', function (f) {
-        storage.read(KEY, function(err, value){
+        storage.read(URL, HEADERS, function(err, value){
           t.strictEqual(err, null);
           t.strictEqual(value, null);
           f();
@@ -72,8 +81,8 @@ describe('RedisResourceStorage', function () {
       });
 
       it('should be able to read key', function (f) {
-        storage.write(KEY, VALUE, function(err, value){
-          storage.read(KEY, function(err, value){
+        storage.write(URL, GZ_HEADERS, VALUE, function(err, value){
+          storage.read(URL, GZ_HEADERS, function(err, value){
             t.strictEqual(value, VALUE);
             f();
           });

@@ -91,12 +91,12 @@ RedisResourceStorage.prototype.dispose = function (f) {
 
 /**
  * [read description]
- * @param  {[type]} key  [description]
- * @param  {[type]} value [description]
+ * @param  {[type]} url  [description]
+ * @param  {[type]} headers [description]
  * @param  {Function} f(err, value)
  */
-RedisResourceStorage.prototype.read = function (key, f) {
-  this._client.get(key, function (err, reply) {
+RedisResourceStorage.prototype.read = function (url, headers, f) {
+  this._client.get(this.formatKey(url, headers), function (err, reply) {
     if (err) {
       f(err);
       return;
@@ -108,12 +108,28 @@ RedisResourceStorage.prototype.read = function (key, f) {
 
 /**
  * [write description]
- * @param  {[type]} key  [description]
+ * @param  {[type]} url  [description]
+ * @param  {[type]} headers  [description]
  * @param  {[type]} value [description]
  * @param  {Function} f(err)
  */
-RedisResourceStorage.prototype.write = function (key, value, f) {
-  this._client.set(key, value, f);
+RedisResourceStorage.prototype.write = function (url, headers, value, f) {
+  this._client.set(this.formatKey(url, headers), value, f);
+};
+
+/**
+ * [formatKey description]
+ * @param url
+ * @param headers
+ */
+RedisResourceStorage.prototype.formatKey = function (url, headers) {
+  var key = url;
+
+  if (headers['content-encoding'] && headers['content-encoding'] === "gzip") {
+    key += '_gz';
+  }
+
+  return key;
 };
 
 module.exports = ResourceStorageInterface.ensureImplements(RedisResourceStorage);

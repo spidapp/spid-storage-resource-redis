@@ -17,7 +17,7 @@
   "dependencies": {
     "lodash": "^2.4.1",
     "redis": "^0.12.1",
-    "spid-storage-resource-interface": "0.0.4"
+    "spid-storage-resource-interface": "0.0.5"
   },
   "scripts": {
     "test": "mocha test/*"
