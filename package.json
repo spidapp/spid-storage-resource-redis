@@ -1,6 +1,6 @@
 {
   "name": "spid-storage-resource-redis",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "[Plugin] Spid Redis Resource Storage",
   "main": "RedisResourceStorage.js",
   "contributors": [
